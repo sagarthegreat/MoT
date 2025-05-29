@@ -329,7 +329,7 @@ def main():
 
             if (args.limit_dataset_size != 0) and ((i + 1) >= args.limit_dataset_size):
                 break
-
+        print(args.model)
         lm_retrieval_hyper_parameter = dict(model=args.model, n=1, top_p=1, temperature=0,
                                             max_length=64)
 
@@ -780,10 +780,7 @@ def main():
 
             if len(response['choices']) == 1:
                 # Answer extraction for zero-shot-cot ...
-                if 'turbo' in args.model:
-                    z = response['choices'][0]['message']['content']
-                else:
-                    z = response['choices'][0]['text']
+                z = response['choices'][0]['text']
                 if args.method == "zero_shot_cot":
                     z2 = x + z + " " + args.direct_answer_trigger_for_zeroshot_cot
                     max_length = args.max_length_direct
@@ -802,7 +799,7 @@ def main():
                 response_set = set()
                 if args.method == "zero_shot_cot":
                     for j, r in enumerate(response['choices']):
-                        content = r['message']['content'] if 'turbo' in args.model else r['text']
+                        content = r['text'] if 'turbo' in args.model else r['text']
                         response_set.add(content)
                         r_2_input = x + content + args.direct_answer_trigger_for_zeroshot_cot
                         tmp_pred = decoder.decode(args, r_2_input, max_length)
@@ -811,7 +808,7 @@ def main():
                         r['tmp_pred'] = tmp_pred
                 else:
                     for j, r in enumerate(response['choices']):
-                        content = r['message']['content'] if 'turbo' in args.model else r['text']
+                        content = r['text'] if 'turbo' in args.model else r['text']
                         if args.method == 'lm_retrieval_few_shot_cot_but_no_thinking':
                             content = content.split('.')[0]
                         response_set.add(content)
@@ -954,6 +951,22 @@ def main():
         print("accuracy : {}".format(accuracy))
         fitlog.add_best_metric({'test_acc': accuracy})
     fitlog.add_best_metric({'tmp': 2})
+
+    log_path = 'accuracy_log.csv'
+    write_header = not os.path.exists(log_path) or os.path.getsize(log_path) == 0
+
+    # Convert distribution to string
+    distribution = str(dict(Counter(demos_correct_p_for_every_x)))
+
+    with open(log_path, 'a') as csv_log:
+        if write_header:
+            csv_log.write("dataset,self_consistency,num_demos_correct,accuracy,demo_distribution\n")
+        for j in range(5):
+            tmp_correct_list = correct_list_for_every_demo_correct_p[j]
+            acc = (sum(tmp_correct_list) * 1.0 / (len(tmp_correct_list) if len(tmp_correct_list) > 0 else -1)) * 100
+            csv_log.write(f"{args.dataset},{args.self_consistency_paths},{j},{acc},{distribution}\n")
+        acc_all = (sum(correct_list) * 1.0 / len(correct_list)) * 100
+        csv_log.write(f"{args.dataset},{args.self_consistency_paths},all,{acc_all},{distribution}\n")
 
 
 def parse_arguments():

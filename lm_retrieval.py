@@ -1,5 +1,4 @@
 import tqdm
-
 from openai_account_manager import call_openai_multi_thread
 import random
 import logging
@@ -154,12 +153,12 @@ def retrieve_demos_by_lm(demos_group_s_for_gpt_to_decode, hyper_parameter, num_t
     # exit()
 
     responses = call_openai_multi_thread(final_for_gpt_to_decode_flat, [hyper_parameter], num_threads, use_tqdm)
-
+    print(responses)
     parsing_error_num = 0
     retrieved_demo_idx_counter = Counter()
     for i, r_dict in enumerate(responses):
         demos = demos_group_for_gpt_to_decode_flat[i][0]
-        r_content = r_dict['choices'][0]['message']['content']
+        r_content = r_dict['choices'][0]['text']
         if i < 5:
             logger.info('retrieval response content {} : {}'.format(i, r_content))
 

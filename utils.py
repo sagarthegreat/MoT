@@ -124,7 +124,9 @@ def decoder_for_gpt3(args, inp, max_length, api_key=None):
 
 
     engine = args.model
+    engine = 'llama3.2:1b'
     n = 1
+    openai.api_base = 'http://127.0.0.1:5151/v1'
     if args.decoding_method == 'self_consistency':
         n = args.self_consistency_paths
 
@@ -159,7 +161,7 @@ def decoder_for_gpt3(args, inp, max_length, api_key=None):
         @openai_api_call_decorator
         def tmp_openai_completion():
             response = openai.Completion.create(
-                engine=engine,
+                model=engine,
                 prompt=inp,
                 max_tokens=max_length,
                 temperature=args.temperature,
@@ -210,25 +212,28 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
     assert 'n' in inference_hyper_parameter_dict
     assert 'temperature' in inference_hyper_parameter_dict
     assert 'top_p' in inference_hyper_parameter_dict
-
-
+    
 
     engine = inference_hyper_parameter_dict['model']
+    engine = 'llama3.2:3b'
 
     max_length = inference_hyper_parameter_dict['max_length']
     n = inference_hyper_parameter_dict['n']
     temperature = inference_hyper_parameter_dict['temperature']
     top_p = inference_hyper_parameter_dict['top_p']
-
+    print(n)
     if 'turbo' not in engine:
+        print("Entered Here")
         if type(inp) is list:
+            print("Entered Here2")
             logger.info('为了保险起见，暂不支持davinci zero shot')
             exit()
             raise NotImplementedError
 
         def tmp_openai_completion():
+            print("FINAL API URL:",openai.api_base)
             response = openai.Completion.create(
-                engine=engine,
+                model=engine,
                 prompt=inp,
                 max_tokens=max_length,
                 temperature=temperature,
@@ -242,6 +247,7 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
             return response
 
         response = tmp_openai_completion()
+
 
     else:
         if turbo_system_message in [None, 'none', 'None']:
@@ -287,8 +293,9 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
                 api_key=api_key
             )
             return response
-
+        
         response = tmp_openai_completion()
+        print(response)
 
     return response
 

@@ -90,7 +90,7 @@ class MyThread(threading.Thread):
                 idx, inp = idx_inp
                 hyper_parameter = tmp['hyper_parameter']
 
-                @repeat_until_success_call_openai_api
+                
                 def tmp_api_call():
 
                     result = decoder_for_gpt3_new(inp, hyper_parameter, turbo_system_message=self.turbo_system_message,api_key=self.account[-1])

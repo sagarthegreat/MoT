@@ -1,4 +1,4 @@
-export OPENAI_API_BASE=https://api.chatanywhere.com.cn/v1
+export OPENAI_API_BASE=127.0.0.1:5151/v1
 #for dataset in drop boolq fact_checker qa_wikidata com_e com_v anli_a1 hotpot_qa
 
 
@@ -9,7 +9,7 @@ now_time_tag=`date +"%Y_%m_%d_%H_%M_%Ss___%3N"`
 exp_name=retrieval_${now_time_tag}___$RANDOM
 demo_seed=$RANDOM
 temperature=1.2
-lm_model=gpt-3.5-turbo-0301
+lm_model=llama3.2:1b
 query_encoding=x
 demo_encoding=x
 do_not_retrieve_same_premise_demos=0
@@ -18,7 +18,7 @@ shuffle_demos_for_lm_retrieval=0
 demos_for_retrieval_using_purely_question=1
 how_to_divide_demos_for_retrieval=score_mod
 do_not_retrieve_same_premise_demo_with_test=1
-num_demo=4
+num_demo=1
 turbo_system_message="You are a helpful assistant. You need to summarize your answer in the end of your response, with the format \"The answer is ...\", like the provided demonstrations."
 #turbo_system_message="none"
 retrieval_hybrid_with_task_demos="none"
@@ -34,7 +34,7 @@ demo_pool_from=gt
 demo_pool_path=demos/filter_by_${demo_c}/${dataset}.jsonl
 retriever_name="all-mpnet-base-v2"
 
-
+echo $self_consistency_path
 
 output_dir=experiment/$dataset/${exp_name}
 mkdir $output_dir -p
@@ -53,13 +53,13 @@ python -u run_mot.py \
 --exp_tag lm_retrieval_grid \
 --demo_pool_from $demo_pool_from \
 --demo_pool_path $demo_pool_path \
---multi_thread 100 \
---api_time_interval 0.01 \
+--multi_thread 1 \
+--api_time_interval 1 \
 --dataset $dataset \
 --demo_path manual_demos_transformed/${dataset}.jsonl \
 --output_dir $output_dir \
 --model $lm_model \
---limit_dataset_size 0 \
+--limit_dataset_size 1 \
 --method $method \
 --query_encoding $query_encoding \
 --demo_encoding $demo_encoding \

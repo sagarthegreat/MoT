@@ -16,7 +16,7 @@ filter_no_trigger=1
 now_time_tag=`date +"%Y_%m_%d_%H_%M_%Ss___%3N"`
 exp_name=retrieval_${now_time_tag}___$RANDOM
 
-lm_model=gpt-3.5-turbo-0301
+lm_model=gpt-3.5-turbo
 query_encoding=x
 demo_encoding=x
 do_not_retrieve_same_premise_demos=0
