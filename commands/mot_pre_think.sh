@@ -30,7 +30,7 @@ method=few_shot_cot
 clustered_retrieval=0
 decoding_method=self_consistency
 
-demo_pool_from=gt
+demo_pool_from=lm_inference
 demo_pool_path=demos/filter_by_${demo_c}/${dataset}.jsonl
 retriever_name="all-mpnet-base-v2"
 

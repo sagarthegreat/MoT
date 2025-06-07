@@ -216,7 +216,7 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
 
     engine = inference_hyper_parameter_dict['model']
     engine = 'llama3.2:3b'
-
+    openai.api_base = 'http://127.0.0.1:2201/v1'
     max_length = inference_hyper_parameter_dict['max_length']
     n = inference_hyper_parameter_dict['n']
     temperature = inference_hyper_parameter_dict['temperature']
