@@ -120,8 +120,7 @@ def print_now(return_flag=0):
 # because it needs the args from argumentParser, it is not general, so it is discarded from V6, use decoder_for_gpt3_new
 def decoder_for_gpt3(args, inp, max_length, api_key=None):
     # because it needs the args from argumentParser, it is not general, so it is discarded from V6, use decoder_for_gpt3_new
-
-
+    openai.api_base = 'http://127.0.0.1:2201/v1'
 
     engine = args.model
     n = 1
@@ -211,7 +210,7 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
     assert 'temperature' in inference_hyper_parameter_dict
     assert 'top_p' in inference_hyper_parameter_dict
 
-
+    openai.api_base = 'http://127.0.0.1:11434/v1'
 
     engine = inference_hyper_parameter_dict['model']
 
@@ -228,7 +227,7 @@ def decoder_for_gpt3_new(inp, inference_hyper_parameter_dict, turbo_system_messa
 
         def tmp_openai_completion():
             response = openai.Completion.create(
-                engine=engine,
+                model=engine,
                 prompt=inp,
                 max_tokens=max_length,
                 temperature=temperature,

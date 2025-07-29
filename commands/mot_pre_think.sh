@@ -1,4 +1,4 @@
-export OPENAI_API_BASE=https://api.chatanywhere.com.cn/v1
+export OPENAI_API_BASE=http://127.0.0.1:11434/v1
 #for dataset in drop boolq fact_checker qa_wikidata com_e com_v anli_a1 hotpot_qa
 
 
@@ -9,7 +9,7 @@ now_time_tag=`date +"%Y_%m_%d_%H_%M_%Ss___%3N"`
 exp_name=retrieval_${now_time_tag}___$RANDOM
 demo_seed=$RANDOM
 temperature=1.2
-lm_model=gpt-3.5-turbo-0301
+lm_model='llama3.2:3b'
 query_encoding=x
 demo_encoding=x
 do_not_retrieve_same_premise_demos=0
@@ -26,7 +26,7 @@ retrieval_hybrid_with_task_demos="none"
 
 
 
-method=few_shot_cot
+method=lm_retrieval_few_shot_cot
 clustered_retrieval=0
 decoding_method=self_consistency
 
